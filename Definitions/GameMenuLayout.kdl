@@ -1,0 +1,148 @@
+// Copyright (c) 2023 Evocation Games
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+@project "Cosmic Frontier";
+@author "Evocation Games";
+@author "Tom Hancocks";
+@version "1.0";
+
+type GameMenuLayout : "mënu" {
+	template {
+		DWRD TargetWidth;
+		DWRD TargetHeight;
+		DWRD OriginX;
+		DWRD OriginY;
+		DWRD AnchorX;
+		DWRD AnchorY;
+
+		DWRD BackgroundOffsetX;
+		DWRD BackgroundOffsetY;
+		RSRC BackgroundImage;
+		
+		PSTR PrimaryFont;
+		DWRD PrimaryFontSize;
+		HLNG PrimaryFontColor;
+		
+		PSTR SecondaryFont;
+		DWRD SecondaryFontSize;
+		HLNG SecondaryFontColor;
+
+		OCNT Elements;
+		LSTC ListBegin;
+		PSTR 	ElementID;
+		PSTR 	ElementAction;
+		DWRD 	ElementType;
+		DWRD 	ElementX;
+		DWRD 	ElementY;
+		DWRD 	ElementWidth;
+		DWRD 	ElementHeight;
+		RSRC 	ElementResourceReference;
+		PSTR 	ElementValue;
+		DWRD 	ElementAlignment;
+		LSTE ListEnd;
+
+	};
+
+	field("TargetSize") {
+		@api(width) TargetWidth = 1920;
+		@api(height) TargetHeight = 1080;
+	};
+
+	field("Origin") {
+		@api(x) OriginX = 960;
+		@api(y) OriginY = 540;
+	};
+
+	field("Anchor") {
+		@api(x) AnchorX = 5000;
+		@api(y) AnchorY = 5000;
+	};
+
+	field("Background") {
+		@api(x) BackgroundOffsetX = 0;
+		@api(y) BackgroundOffsetY = 0;
+		@api(image) BackgroundImage as & = #8000;
+	};
+	
+	field("PrimaryFont") {
+		@api(name) PrimaryFont = "";
+		@api(size) PrimaryFontSize = 0;
+		@api(color) PrimaryFontColor as Color = 0;
+	};
+	
+	field("SecondaryFont") {
+		@api(name) SecondaryFont = "";
+		@api(size) SecondaryFontSize = 0;
+		@api(color) SecondaryFontColor as Color = 0;
+	};
+
+	field("Element") repeatable<1, 65535, Elements> {
+		@api(id) ElementID [
+			NewPilotButton = "button.newpilot",
+			ManagePilotsButton = "button.managepilots",
+			AchievementsButton = "button.achievements",
+			QuitButton = "button.quit",
+			EnterShipButton = "button.entership",
+			ManagePluginsButton = "button.manageplugins",
+			SettingsButton = "button.settings",
+			AboutButton = "button.about",
+			PlayerShipImage = "preview.image.player.ship",
+			PlayerNamePromptLabel = "preview.label.prompt.player.name",
+			PlayerNameLabel = "preview.label.player.name",
+			PlayerShipNamePromptLabel = "preview.label.prompt.ship.name",
+			PlayerShipNameLabel = "preivew.label.ship.name",
+			PlayerShipClassPromptLabel = "preview.label.prompt.ship.class",
+			PlayerShipClassLabel = "preview.label.ship.class",
+			PlayerLegalStatusPromptLabel = "preview.label.prompt.player.legalstatus",
+			PlayerLegalStatusLabel = "preview.label.player.legalstatus",
+			PlayerCombatRatingPromptLabel = "preview.label.prompt.player.combatrating",
+			PlayerCombatRatingLabel = "preview.label.player.combatrating",
+			PlayerCurrentDatePromptLabel = "preview.label.prompt.player.date",
+			PlayerCurrentDateLabel = "preview.label.player.date",
+			NoPilotLoadedLabel = "no-preview.label"
+		];
+		@api(type) ElementType [
+			Sprite = 1,
+			Image = 2,
+			Button = 3,
+			Animation = 4,
+			PrimaryLabel = 5,
+			SecondaryLabel = 6
+		];
+		@api(resourceReference) ElementResourceReference as & = None [
+			None = #-1,
+			CurrentShipSprite = #-1000,
+			CurrentShipTargetting = #-1001,
+			CurrentShipShipyard = #-1002
+		];
+		@api(x) ElementX;
+		@api(y) ElementY;
+		@api(width) ElementWidth = Ignored [ Ignored = -1 ];
+		@api(height) ElementHeight = Ignored [ Ignored = -1 ];
+		@api(action) ElementAction = "";
+		@api(value) ElementValue = "";
+		@api(alignment) ElementAlignment = Left [
+			Left = 1,
+			Center = 2,
+			Right = 3
+		];
+	};
+
+};

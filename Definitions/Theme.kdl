@@ -1,0 +1,197 @@
+// Copyright (c) 2023 Evocation Games
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+@project "Cosmic Frontier";
+@author "Evocation Games";
+@author "Tom Hancocks";
+@version "1.0";
+
+// The cölr resource allows you to customize some game-wide interface options.
+// The various interface buttons that appear are drawn on the fly. Nova uses PICT
+// resources 7500-7502 for the left, centre, and right pieces of the "up"
+// buttons, PICT resources 7503-7505 for the "down" button pieces, and PICT
+// resources 7506-7508 for the greyed-out button pieces. Corresponding mask
+// images are stored in PICTs 7600-7608. STR# resource 150 is used to store the
+// text that appears on each button type.
+// Note that all color fields in the cölr resource are encoded the same as HTML
+// colors, and that only the first cölr resource is loaded.
+
+type Theme : "cölr" {
+    template {
+        HLNG ButtonUpColor;
+        HLNG ButtonDownColor;
+        HLNG ButtonDisabledColor;
+        C040 MenuFont;
+        DWRD MenuFontSize;
+        HLNG MenuColorBright;
+        HLNG MenuColorDim;
+        HLNG GridColorBright;
+        HLNG GridColorDim;
+        RECT LoadingBounds;
+        HLNG LoadingColorBright;
+        HLNG LoadingColorDim;
+        HLNG LoadingColorOutline;
+        DWRD MenuButtonX1;
+        DWRD MenuButtonY1;
+        DWRD MenuButtonX2;
+        DWRD MenuButtonY2;
+        DWRD MenuButtonX3;
+        DWRD MenuButtonY3;
+        DWRD MenuButtonX4;
+        DWRD MenuButtonY4;
+        DWRD MenuButtonX5;
+        DWRD MenuButtonY5;
+        DWRD MenuButtonX6;
+        DWRD MenuButtonY6;
+        HLNG FloatingMap;
+        HLNG ListTextColor;
+        HLNG ListBackgroundColor;
+        HLNG ListHighlightColor;
+        HLNG EscortMenuHighlightColor;
+        C040 ButtonFont;
+        DWRD ButtonFontSize;
+        DWRD LogoX;
+        DWRD LogoY;
+        DWRD RolloverX;
+        DWRD RolloverY;
+        DWRD SlideX1;
+        DWRD SlideY1;
+        DWRD SlideX2;
+        DWRD SlideY2;
+        DWRD SlideX3;
+        DWRD SlideY3;
+    };
+
+    // Normal button text color.
+    field("ButtonUpColor") {
+        ButtonUpColor as Color;
+    };
+
+    // Pressed button text color.
+    field("ButtonDownColor") {
+        ButtonDownColor as Color;
+    };
+
+    // Greyed-out button text color.
+    field("ButtonDisabledColor") {
+        ButtonDisabledColor as Color;
+    };
+
+    // Main menu font size and name.
+    field("MenuFont") {
+        @api(size) MenuFontSize;
+        @api(name) MenuFont;
+    };
+
+    // Bright color for the main menu
+    field("MenuColorBright") {
+        MenuColorBright as Color;
+    };
+
+    // Dim color for the main menu
+    field("MenuColorDim") {
+        MenuColorDim as Color;
+    };
+
+    // Shipyard/outfit dialog selection square color.
+    field("GridColorBright") {
+        GridColorBright as Color;
+    };
+
+    // Shipyard/outfit dialog grid color.
+    field("GridColorDim") {
+        GridColorDim as Color;
+    };
+
+    // Position and shape of the loading progress bar, relative to the centre of
+    // the window.
+    @synthesize field("LoadingBounds");
+
+    // Bright progress bar color.
+    field("LoadingColorBright") {
+        LoadingColorBright as Color;
+    };
+
+    // Dim progress bar color .
+    field("LoadingColorDim") {
+        LoadingColorDim as Color;
+    };
+
+    // Progress bar outline color.
+    field("LoadingColorOutline") {
+        LoadingColorOutline as Color;
+    };
+
+    // Position of the six main menu buttons, relative to the top left corner of
+    // a 1024x768 main menu background.
+    field("MenuButton") repeatable<1, 6> {
+        @api(x) MenuButtonX<$FieldNumber>;
+        @api(y) MenuButtonY<$FieldNumber>;
+    };
+
+    // Floating hyperspace map / escort menu border color.
+    field("FloatingMapColor") {
+        FloatingMap as Color;
+    };
+
+    // List text color.
+    field("ListTextColor") {
+        ListTextColor as Color;
+    };
+
+    // List background color.
+    field("ListBackgroundColor") {
+        ListBackgroundColor as Color;
+    };
+
+    // List highlight color.
+    field("ListHighlightColor") {
+        ListHighlightColor as Color;
+    };
+
+    // Escort menu item highlight color
+    field("EscortMenuHighlightColor") {
+        EscortMenuHighlightColor as Color;
+    };
+
+    // Button font size and name.
+    field("ButtonFont") {
+        @api(size) ButtonFontSize;
+        @api(name) ButtonFont;
+    };
+
+    // Logo animation x/y position.
+    field("Logo") {
+        @api(x) LogoX;
+        @api(y) LogoY;
+    };
+
+    // Rollover animation x/y position.
+    field("Rollover") {
+        @api(x) RolloverX;
+        @api(y) RolloverY;
+    };
+
+    // Sliding button x/y positions.
+    field("Slide") repeatable<1, 3> {
+        @api(x) SlideX<$FieldNumber>;
+        @api(y) SlideY<$FieldNumber>;
+    };
+};

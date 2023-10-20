@@ -1,0 +1,103 @@
+// Copyright (c) 2023 Evocation Games
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+@project "Cosmic Frontier";
+@author "Evocation Games";
+@author "Tom Hancocks";
+@version "1.0";
+
+// A flet resource defines the parameters for a fleet, which is a collection of
+// ships that can be made to appear randomly throughout the galaxy.
+
+type Fleet : "flët" {
+    template {
+        RSRC LeadShipType;
+        RSRC EscortType1;
+        RSRC EscortType2;
+        RSRC EscortType3;
+        RSRC EscortType4;
+        DWRD Min1;
+        DWRD Min2;
+        DWRD Min3;
+        DWRD Min4;
+        DWRD Max1;
+        DWRD Max2;
+        DWRD Max3;
+        DWRD Max4;
+        RSRC Government;
+        DWRD LinkSystem;
+        C100 AppearOn;
+        DWRD Quote;
+        HWRD Flags;
+        // 8 Shorts Reserved
+    };
+
+    // ID of the fleet's flagship's ship class.
+    field("LeadShipType") {
+        LeadShipType as Ship&;
+    };
+
+    // IDs of the flagships escorts' ship classes, and the min/max number of each
+    // ship to spawn. If you don't want to use four different escort types, you
+    // should still set the unused fields to a valid ship class ID. (you can set
+    // the min & max fields to 0 and just have the extra ships not appear).
+    field("Escorts") repeatable<1, 4> {
+        @api(type) EscortType<$FieldNumber> as Ship&;
+        @api(min) Min<$FieldNumber> = 0;
+        @api(max) Max<$FieldNumber> = 0;
+    };
+
+    // ID of the fleet's government, of -1 for none.
+    field("Government") {
+        Government as Government& = None [ None = #-1 ];
+    };
+
+    // Which systems the fleet can be created in.
+    // -1: Any system.
+    // 128-2175: ID of a specific system.
+    // 10000-10255: Any system belonging to this specific government.
+    // 15000-15255: Any system belonging to an ally of this govt.
+    // 20000-20255: Any system belonging to any but this govt.
+    // 25000-25255: Any system belonging to an enemy of this govt.
+    field("LinkSystem") {
+        LinkSystem = AnySystem [ AnySystem = -1 ];
+    };
+
+    // A control bit test field that will cause a given fleet to appear only when
+    // the expression evaluates to true. If this field is left blank it will be
+    // ignored.
+    @synthesize field("AppearOn") = "";
+
+    // Flags
+    field("Flags") {
+        Flags as Bitmask [
+            // Freighters (InherentAI <= 2) in this fleet will have random cargo
+            // when boarded.
+            FreightersHaveRandomCargo = 0x0001
+        ];
+    };
+
+    // Show a random string from the STR# resource with this ID when the fleet
+    // enters from hyperspace. Any occurrences of the character '#' in this
+    // string will be replaced with a random digit (0-9).
+    field("Quote") {
+        Quote = None [ None = -1 ];
+    };
+};

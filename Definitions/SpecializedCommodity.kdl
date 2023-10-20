@@ -1,0 +1,110 @@
+// Copyright (c) 2023 Evocation Games
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+@project "Cosmic Frontier";
+@author "Evocation Games";
+@author "Tom Hancocks";
+@version "1.0";
+
+// Junk resources store info on specialized commodities that can be bought and
+// sold at a few locations.
+
+type SpecializedCommodity : "jünk" {
+    template {
+        RSRC SoldAt1;
+        RSRC SoldAt2;
+        RSRC SoldAt3;
+        RSRC SoldAt4;
+        RSRC SoldAt5;
+        RSRC SoldAt6;
+        RSRC SoldAt7;
+        RSRC SoldAt8;
+        RSRC BoughtAt1;
+        RSRC BoughtAt2;
+        RSRC BoughtAt3;
+        RSRC BoughtAt4;
+        RSRC BoughtAt5;
+        RSRC BoughtAt6;
+        RSRC BoughtAt7;
+        RSRC BoughtAt8;
+        DWRD BasePrice;
+        HWRD Flags;
+        HWRD ScanMask;
+        C040 LowercaseName;
+        C040 Abbreviation;
+        C0FF BuyOn;
+        C0FF SellOn;
+    };
+
+    // ID number of the stellar object where the commodity is sold. Set to 0 or
+    // -1 if unused.
+    field("SoldAtStellar") repeatable<1, 8> {
+        SoldAt<$FieldNumber> as StellarObject& = None [ None = #-1 ];
+    };
+
+    // ID number of the stellar object where the commodity is purchased. Set to
+    // 0 or -1 if unused.
+    field("BoughtAtStellar") repeatable<1, 8> {
+        BoughtAt<$FieldNumber> as StellarObject& = None [ None = #-1];
+    };
+
+    // The average price of the commodity (works much like the base prices for
+    // "regular" commodities).
+    @synthesize field("BasePrice");
+
+    // Misc flag bits.
+    @MergeBitmask field("Flags") {
+        Flags as Bitmask [
+            // Tribbles flag - When in your cargo bay, the commodity multiplies
+            // like tribbles.
+            Tribbles = 0x0001,
+
+            // Perishable - When in your cargo bay, the commodity gradually
+            // decays away.
+            Perishable = 0x0002
+        ];
+    };
+
+    // If this is an "illegal" cargo type, this is used in conjunction with the
+    // ScanMask field in the gövt resource. If any of the 1 bits in a ship's
+    // government's ScanMask field match any of the 1 bits in a jünk type's `
+    // ScanMask field, that government will consider that junk cargo type
+    // illegal. Set to zero if unused.
+    field("ScanMask") {
+        ScanMask as Bitmask;
+    };
+
+    // The lower-case string to display in the player-info dialog box, among
+    // other places, e.g. "machine parts".
+    @synthesize field("LowercaseName");
+
+    // The short string that is displayed in the player's status bar when the
+    // player is carrying jünk of this type, e.g. "Parts".
+    @synthesize field("Abbreviation");
+
+    // Control bit test expression. This jünk will only be available to be bought
+    // when this expression evaluates true. Leave blank if unused.
+    @synthesize field("BuyOn") = "";
+
+    // Control bit test expression. This jünk will only be able to be sold when
+    // this expression evaluates true. Leave blank if unused.
+    @synthesize field("SellOn") = "";
+};
+

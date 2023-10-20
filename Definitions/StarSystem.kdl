@@ -1,0 +1,276 @@
+// Copyright (c) 2023 Evocation Games
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+@project "Cosmic Frontier";
+@author "Evocation Games";
+@author "Tom Hancocks";
+@version "1.0";
+
+// Syst resources store information on star systems, in which all combat,
+// trading, and spaceflight take place. Each system can be linked to up to 16
+// other systems, and the player can make hyperspace jumps back and forth between
+// them.
+type StarSystem : "sÿst" {
+    template {
+        DWRD x;
+        DWRD y;
+        RSRC Con1;
+        RSRC Con2;
+        RSRC Con3;
+        RSRC Con4;
+        RSRC Con5;
+        RSRC Con6;
+        RSRC Con7;
+        RSRC Con8;
+        RSRC Con9;
+        RSRC Con10;
+        RSRC Con11;
+        RSRC Con12;
+        RSRC Con13;
+        RSRC Con14;
+        RSRC Con15;
+        RSRC Con16;
+        RSRC Con17;
+        RSRC Con18;
+        RSRC Con19;
+        RSRC Con20;
+        RSRC Nav1;
+        RSRC Nav2;
+        RSRC Nav3;
+        RSRC Nav4;
+        RSRC Nav5;
+        RSRC Nav6;
+        RSRC Nav7;
+        RSRC Nav8;
+        RSRC Nav9;
+        RSRC Nav10;
+        RSRC Nav11;
+        RSRC Nav12;
+        RSRC Nav13;
+        RSRC Nav14;
+        RSRC Nav15;
+        RSRC Nav16;
+        RSRC DudeType1;
+        RSRC DudeType2;
+        RSRC DudeType3;
+        RSRC DudeType4;
+        RSRC DudeType5;
+        RSRC DudeType6;
+        RSRC DudeType7;
+        RSRC DudeType8;
+        DWRD DudeProb1;
+        DWRD DudeProb2;
+        DWRD DudeProb3;
+        DWRD DudeProb4;
+        DWRD DudeProb5;
+        DWRD DudeProb6;
+        DWRD DudeProb7;
+        DWRD DudeProb8;
+        DWRD AverageShipCount;
+        RSRC Government;
+        DWRD Message;
+        DWRD Asteroids;
+        DWRD Interference;
+        RSRC Person1;
+        RSRC Person2;
+        RSRC Person3;
+        RSRC Person4;
+        RSRC Person5;
+        RSRC Person6;
+        RSRC Person7;
+        RSRC Person8;
+        DWRD PersProb1;
+        DWRD PersProb2;
+        DWRD PersProb3;
+        DWRD PersProb4;
+        DWRD PersProb5;
+        DWRD PersProb6;
+        DWRD PersProb7;
+        DWRD PersProb8;
+        HLNG BackgroundColor;
+        DWRD Murk;
+        HWRD AsteroidTypes;
+        C100 Visibility;
+        RSRC ReinforcementFleet;
+        DWRD ReinforcementTime;
+        DWRD ReinforcementInterval;
+        DWRD HyperspaceThreshold;
+        HWRD Flags;
+        
+        // 8 Shorts Reserved
+    };
+
+    // The first two fields in the syst resource tell Nova where on the map to
+    // place it:
+    field("Position") {
+        x;
+        y;
+    };
+
+    // The next fields store the hyperspace links to up to 16 other systems:
+    field("HyperspaceLink") repeatable<1, 20> {
+        Con<$FieldNumber> as StarSystem& = None [ None = #-1 ];
+    };
+
+    // The next fields store the stellar navigation defaults (F1-F4 for the first
+    // four) for the system. It is important to always set navigation defaults
+    // for stellar objects in your systems, because that's how Nova's AI routines
+    // and status display keep track of stellar objects; if you don't set a
+    // planet as a nav default, the AIs won't "see" it, it won't show up on the
+    // radar, and you can't select it.
+    field("StellarObject") repeatable<1, 16> {
+        @api(reference) Nav<$FieldNumber> as StellarObject& = #-1 [ None = #-1 ];
+    };
+
+    // The next fields tell Nova how many ships, and of what kind, to put in the
+    // system: ID number of the ship class to place, and robability that a given
+    // ship placed is of the corresponding class.
+    field("AgentTypes") repeatable<1, 8> {
+        @api(reference) DudeType<$FieldNumber> as AgentTypeClassification& = None [ 
+            None = #-1
+        ];
+        @api(probability) DudeProb<$FieldNumber> as Range<0%, 100%> = 0%;
+    };
+
+    // The average number of AI ships in the system
+    field("AverageShipCount") {
+        AverageShipCount;
+    };
+
+    // Which government owns the system.
+    field("Government") {
+        Government as Government& = Independent [
+            Independent = #-1
+        ];
+    };
+
+    // Which message buoy string to display: if not -1, use this entry in STR#
+    // resource 1000 as the text of the message buoy.
+    field("Message") {
+        Message = None [ None = -1 ];
+    };
+
+    // How many asteroids to put in the system, from 0 to 16.
+    field("Asteroids") {
+        Asteroids as Range<0, 16> = 0;
+    };
+
+    // How thick the static in the system should be. 0 is no static, 100 is
+    // complete sensor blackout.
+    field("Interference") {
+        Interference as Range<0%, 200%>;
+    };
+
+    // Want to make a ‘pers’ type ship always appear? Put its ID into one of the
+    // Person fields that appear at the end of the syst resource.
+    field("Person") repeatable<1, 8> {
+        @api(reference) Person<$FieldNumber> as Person& = None [ None = #-1 ];
+        @api(probability) PersProb<$FieldNumber> as Range<0%, 100%> = 0%;
+    };
+
+    // The system's background color, encoded the same as HTML colours. (RRGGBB)
+    // ...set to zero for pure black.
+    field("BackgroundColor") {
+        BackgroundColor as Color = rgb(0, 0, 0);
+    };
+
+    // The murkiness of the system (0-100). Zero will cause everything to appear
+    // normally - 100 will cause the player to question their current glasses
+    // prescription. A value less than zero is equivalent to zero murk but also
+    // hides the starfield.
+    field("Murk") {
+        Murk as Range<-1, 100> = 0 [
+            HideStarfield = -1
+        ];
+    };
+
+    // Flag bits that determine what types of asteroids will appear in this
+    // system:
+    // 0x0001 is ID 128
+    // 0x0002 is ID 129
+    // 0x0004 is ID 130
+    // ...
+    // 0x8000 is ID 143
+    field("AsteroidTypes") {
+        AsteroidTypes as Bitmask = 0 [
+            SmallMetal = 0x0001,
+            MediumMetal = 0x0002,
+            LargeMetal = 0x0004,
+            HugeMetal = 0x0008,
+            SmallIce = 0x0010,
+            MediumIce = 0x0020,
+            LargeIce = 0x0040,
+            HugeIce = 0x0080,
+            SmallDust = 0x0100,
+            MediumDust = 0x0200,
+            LargeDust = 0x0400,
+            HugeDust = 0x0800,
+            SmallCrystal = 0x1000,
+            MediumCrystal = 0x2000,
+            LargeCrystal = 0x4000,
+            HugeCrystal = 0x8000
+        ];
+    };
+
+    // The Visibility field controls how and when to make the system visible or
+    // invisible. You can pull off some cool tricks with this field, including
+    // presenting the illusion that system has changed in some way by hiding the
+    // original system and replacing it with a copy that is identical except for
+    // the desired changes. The Visibility field is a control bit test expression
+    // – leave it blank if unused.
+    // Note: Using the Visibility field to replace one system with another will
+    // work fine as long as they have the exact same coordinates (that's how Nova
+    // knows to update the hyper links, etc.) But, if you're going to have
+    // systems replacing each other in response to ncb changes, be sure that the
+    // Visibility fields of all the systems are mutually exclusive, or the
+    // resulting behaviour will be undefined and probably incorrect.
+    @synthesize field("Visibility") = "";
+
+    // The ID of a fleet to use as this system's reinforcement fleet. If ships
+    // allied with the reinforcement fleet's government are under attack and the
+    // combat odds against them exceed the MaxOdds field of the reinforcement
+    // fleet's government, the reinforcement fleet will be called in. Set to 0
+    // or -1 if unused.
+    field("ReinforcementFleet") {
+        ReinforcementFleet as Fleet& = None [ None = #-1 ];
+    };
+
+    // The delay between the time the reinforcement call goes out and the time
+    // the fleet appears. A value of 30 = one second.
+    @synthesize field("ReinforcementTime") = 0;
+
+    // The interval, in days, that it takes for the reinforcement fleet to be
+    // regenerated. If you set this to 0, a reinforcement fleet will be available
+    // every day. If you set this higher than zero, it will take that number of
+    // days for the reinforcement fleet to be available again.
+    @synthesize field("ReinforcementInterval") = 0;
+    
+    // The distance from the system center that a ship needs to be before it
+    // can engage it's hyperspace engine.
+    @synthesize field("HyperspaceThreshold") = -1;
+    
+    // Flags
+    @MergeBitmask field("Flags") {
+        Flags as Bitmask = 0 [
+            ForceSystemThreshold = 0x0001,
+        ];
+    };
+    
+};

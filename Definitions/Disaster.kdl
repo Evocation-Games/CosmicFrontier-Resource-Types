@@ -1,0 +1,78 @@
+// Copyright (c) 2023 Evocation Games
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+@project "Cosmic Frontier";
+@author "Evocation Games";
+@author "Tom Hancocks";
+@version "1.0";
+
+// Oops resources contain info on planetary disasters. Actually, the term
+// 'disasters' is a misnomer, as these occurrences simply affect the price of a
+// single commodity at a planet or station, for good or bad. Nova uses the name
+// of the resource in the commodity exchange dialog box to indicate that a
+// disaster is currently going on at a planet.
+type Disaster : "öops" {
+    template {
+        RSRC StellarObject;
+        DWRD Commodity;
+        DWRD PriceChange;
+        DWRD Duration;
+        DWRD Chance;
+        C100 ActivateOn;
+        // 8 Shorts Reserved
+    };
+
+    // The stellar object this disaster is linked to.
+    field("StellarObject") {
+        StellarObject as StellarObject& = AnyStellar [
+            // Any planet or station (use sparingly).
+            AnyStellar = #-1,
+
+            // Nothing (used for mission-related news).
+            NoStellar = #-2
+        ];
+    };
+
+    // Which commodity to affect the price of
+    field("Commodity") {
+        Commodity [
+            Food = 0,
+            Industrial = 1,
+            MedicalSupplies = 2,
+            LuxuryGoods = 3,
+            Metal = 4,
+            Equipment = 5
+        ];
+    };
+
+    // How much to raise or lower the price. (negative numbers lower it).
+    @synthesize field("PriceChange") = 0;
+
+    // How many days the disaster lasts.
+    @synthesize field("Duration") = 1;
+
+    // Percentage change per day that the disaster will occur.
+    field("Chance") {
+        Chance as Range<0%, 100%> = 100%;
+    };
+
+    // Control bit test expression.
+    @synthesize field("ActivateOn") = "";
+};

@@ -1,0 +1,145 @@
+// Copyright (c) 2023 Evocation Games
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+@project "Cosmic Frontier";
+@author "Evocation Games";
+@author "Tom Hancocks";
+@version "1.0";
+
+// The ïntf resource controls the appearance of the status bar by modifying the
+// position and colour of the various status bar elements, as well as changing
+// the status bar background image. Additionally, the use of multiple ïntf
+// resources, along with proper values in the various gövt resources' Interface
+// fields, allows the appearance of status bar to change based on what type of
+// ship the player is piloting - this is a useless but fairly neat effect.
+
+// Note that all colours in the ïntf resource are encoded the same as HTML
+// colours, and that vertical shield/armour/fuel bars are properly handled by the
+// game engine - to make an indicator bar vertical, set its height to be greater
+// than its width. Also note that setting any of the above rectangles to have
+// zero area (right=left, top=bottom) will cause the corresponding status
+// indicator to not be drawn.
+
+type StatusBarAppearance : "ïntf" {
+    template {
+        HLNG BrightTextColor;
+        HLNG DimTextColor;
+        RECT RadarArea;
+        HLNG BrightRadarColor;
+        HLNG DimRadarColor;
+        RECT ShieldArea;
+        HLNG ShieldColor;
+        RECT ArmorArea;
+        HLNG ArmorColor;
+        RECT FuelArea;
+        HLNG FuelFullColor;
+        HLNG FuelPartialColor;
+        RECT NavigationArea;
+        RECT WeaponArea;
+        RECT TargetArea;
+        RECT CargoArea;
+        C040 StatusFont;
+        DWRD StatFontSize;
+        DWRD SubtitleSize;
+        RSRC StatusBackground;
+    };
+
+    // Bright text colour.
+    field("BrightTextColor") {
+        BrightTextColor as Color;
+    };
+
+    // Dim text colour.
+    field("DimTextColor") {
+        DimTextColor as Color;
+    };
+
+    // Rectangular bounds of the radar display.
+    field("RadarArea") {
+        RadarArea;
+    };
+
+    // Bright radar pixel colour.
+    field("BrightRadarColor") {
+        BrightRadarColor as Color;
+    };
+
+    // Dim radar pixel colour (note that having an IFF outfit will override these
+    // colours).
+    field("DimRadarColor") {
+        DimRadarColor as Color;
+    };
+
+    // Rectangular bounds of the shield indicator.
+    field("ShieldArea") {
+        ShieldArea;
+    };
+
+    // Shield bar colour.
+    field("ShieldColor") {
+        ShieldColor as Color;
+    };
+
+    // Rectangular bounds of the armour indicator.
+    @synthesize field("ArmorArea");
+
+    // Armour bar colour.
+    field("ArmorColor") {
+        ArmorColor as Color;
+    };
+
+    // Rectangular bounds of the fuel indicator.
+    @synthesize field("FuelArea");
+
+    // Colour of the "full jumps" portion of the fuel indicator.
+    field("FuelFullColor") {
+        FuelFullColor as Color;
+    };
+
+    // Colour of the "partial fuel" portion of the fuel indicator.
+    field("FuelPartialColor") {
+        FuelPartialColor as Color;
+    };
+
+    // Rectangular bounds of the navigation display.
+    @synthesize field("NavigationArea");
+
+    // Rectangular bounds of the weapon display.
+    @synthesize field("WeaponArea");
+
+    // Rectangular bounds of the target display.
+    @synthesize field("TargetArea");
+
+    // Rectangular bounds of the cargo display.
+    @synthesize field("CargoArea");
+
+    // Font to use for the status bar.
+    field("StatusFont") {
+        @api(name) StatusFont;
+        @api(size) StatFontSize;
+    };
+
+    // Font size for ship subtitles.
+    @synthesize field("SubtitleSize");
+
+    // ID of PICT resource to use as backdrop for status display. Values less
+    // than 128 are interpreted as 128.
+    @synthesize field("StatusBackground");
+};
