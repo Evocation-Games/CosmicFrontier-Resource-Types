@@ -1,0 +1,18 @@
+name: Cosmic Frontier Definitions
+on: [push]
+jobs:
+  definitions:
+    name: Cosmic Frontier Definitions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Package
+        run: |
+          tar -cvf CosmicFrontier-Definitions.tar.gz ./CosmicFrontier
+          sha256sum CosmicFrontier-Definitions.tar.gz
+      - name: Upload Package
+        uses: actions/upload-artifact@v3
+        with:
+          name: CosmicFrontier-Definitions
+          path: CosmicFrontier-Definitions.tar.gz
